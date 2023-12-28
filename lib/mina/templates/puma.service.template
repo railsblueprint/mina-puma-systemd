@@ -1,0 +1,34 @@
+[Unit]
+Description=Puma HTTP Server for <%= "#{fetch(:application)} (#{fetch(:stage)})" %>
+After=network.target
+<%= "Requires=#{fetch(:puma_service_name)}.socket" if fetch(:puma_enable_socket_service) %>
+
+[Service]
+Type=notify
+WatchdogSec=10
+
+User=<%= fetch(:puma_user) %>
+Group=<%= fetch(:puma_group) %>
+WorkingDirectory=<%= fetch(:current_path) %>
+
+ExecStart=<%= fetch(:puma_bundle_exec) %> puma -C <%= fetch(:shared_path) %>/puma.rb config.ru
+ExecStop=<%= fetch(:puma_bundle_exec) %> pumactl -S <%= fetch(:shared_path) %>/pids/puma.state stop
+ExecReload=<%= fetch(:puma_bundle_exec) %> pumactl -F <%= fetch(:shared_path) %>/puma.rb phased-restart
+
+PIDFile=<%= fetch(:shared_path) %>/tmp/pids/puma.pid
+
+<%="EnvironmentFile=#{fetch(:puma_service_unit_env_file)}" if fetch(:puma_service_unit_env_file) %>
+
+<% fetch(:puma_service_unit_env_vars, []).each do |environment_variable| %>
+<%="Environment=#{environment_variable}" %>
+<% end -%>
+Environment=ALLOC_ARENA_MAX=2
+
+
+Restart=always
+RestartSec=1
+
+SyslogIdentifier=puma_<%= "#{fetch(:application)}_#{fetch(:stage)}" %>
+
+[Install]
+WantedBy=multi-user.target

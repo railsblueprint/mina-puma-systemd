@@ -1,1 +1,1 @@
-load File.expand_path("../puma/tasks.rake", __FILE__)
+load File.expand_path("../puma_systemd/tasks.rake", __FILE__)

@@ -10,6 +10,8 @@ This gem provides several mina tasks:
     mina puma:start           # Start puma
     mina puma:stop            # Stop puma
     mina puma:status          # Get status
+    mina puma:enable          # Enables systemd service
+    mina puma:disable         # Disables systemd service
 
 ## Installation
 
@@ -22,7 +24,6 @@ And then execute:
     $ bundle
 
 Note: by just including this gem, does not mean your development server will be Puma, for that, you need explicitly add `gem 'puma'` to your Gemfile and configure it.
-This gem does not (yet) create puma and systemd service config files, you have to do it manually.
 
 ## Usage
 
@@ -44,6 +45,16 @@ You can tweak some settings:
 
 * `puma_systemctl` - systemctl command, default is ` sudo systemctl`. Other option would be `systemctl --user` if you have setup pumas as user service. 
 * `puma_service_name` - puma service name , default is `puma_#{fetch(:application_name)}_#{fetch(:puma_env)}`
+
+## Setting up server
+
+    mina puma:install       # copies templates for puma config and systemd service to config/deploy/templates
+    mina puma:print         # prints generated config files to stdout
+    mina puma:print_service # prints generated systemd service to stdout
+    mina puma:print_config  # prints generated puma.rb to stdout
+    mina puma:setup         # install config files on service in enables systemd service
+
+Later commmand relies on sudo to work. If you don't want to grant sudo, print config files to console and install em manually.
 
 
 Then:
@@ -79,10 +90,6 @@ deploy          ALL=(ALL)       NOPASSWD: SERVICES
 ```
 
 If you are paranoid, substitute `*` with exact service name. Better option would be to run as user service, but it did not work for me out of box on AWS AMI2.
-
-## TODO
-* Generate and upload puma.rb file
-* Generate and upload puma systemd service
 
 ## Contributing
 
