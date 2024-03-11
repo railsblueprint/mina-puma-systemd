@@ -65,7 +65,7 @@ $ mina puma:start
 
 ## Example
 ```ruby
-require 'mina/puma-systemd'
+require 'mina/puma_systemd'
 
 task :deploy do
   deploy do
