@@ -35,6 +35,7 @@ Make sure the following settings are set in your `config/deploy.rb`:
 
 * `deploy_to`   - deployment path
 * `rails_env`   - rails environement (will default to `production`)
+* `user`        - **REQUIRED** - deployment user (used for systemd service). Can be overridden with `puma_user`
 
 Make sure the following directories exists on your server (they are added automatically to `shared_dirs`:
 
@@ -45,6 +46,12 @@ You can tweak some settings:
 
 * `puma_systemctl` - systemctl command, default is ` sudo systemctl`. Other option would be `systemctl --user` if you have setup pumas as user service. 
 * `puma_service_name` - puma service name , default is `puma_#{fetch(:application_name)}_#{fetch(:puma_env)}`
+* `puma_user` - user for running the service, defaults to `user` setting
+* `puma_group` - group for running the service, defaults to `user` setting
+
+## Important: User Configuration
+
+**⚠️ The `user` setting is required!** The gem will validate that either `user` or `puma_user` is set before generating systemd files. Without a valid user, the systemd service will fail to start with cryptic error messages.
 
 ## Setting up server
 
