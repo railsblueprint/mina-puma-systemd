@@ -94,6 +94,7 @@ namespace :puma do
 
   desc 'Print nginx config in local terminal'
   task :print do
+    validate_puma_user!
     puts "----  puma.service ----------"
     puts processed_puma_service_template
     puts "----  puma.rb ---------------"
@@ -102,6 +103,7 @@ namespace :puma do
 
   desc 'Print puma service config in local terminal'
   task :print_service do
+    validate_puma_user!
     puts processed_puma_service_template
   end
 
@@ -112,6 +114,8 @@ namespace :puma do
 
   desc 'Setup puma service on server'
   task :setup do
+    validate_puma_user!
+    
     puma_service_config = fetch(:puma_service_config)
     puma_config = fetch(:puma_config)
 
@@ -166,6 +170,39 @@ namespace :puma do
 
   def escaped_puma_config_template
     processed_puma_config_template.gsub("\n","\\n").gsub("'","\\'")
+  end
+
+  def validate_puma_user!
+    puma_user = fetch(:puma_user)
+    puma_group = fetch(:puma_group)
+    
+    if puma_user.nil? || puma_user.to_s.strip.empty?
+      error! %(
+ERROR: puma_user is not set!
+
+The systemd service requires a user to run under.
+Please set either :user or :puma_user in your deploy.rb:
+
+Example:
+  set :user, 'deploy'
+  # or
+  set :puma_user, 'deploy'
+      )
+    end
+    
+    if puma_group.nil? || puma_group.to_s.strip.empty?
+      error! %(
+ERROR: puma_group is not set!
+
+The systemd service requires a group to run under.
+Please set either :user or :puma_group in your deploy.rb:
+
+Example:
+  set :user, 'deploy'
+  # or
+  set :puma_group, 'deploy'
+      )
+    end
   end
 
 end
