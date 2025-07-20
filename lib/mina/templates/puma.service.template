@@ -23,6 +23,9 @@ PIDFile=<%= fetch(:shared_path) %>/tmp/pids/puma.pid
 <%="Environment=#{environment_variable}" %>
 <% end -%>
 Environment=ALLOC_ARENA_MAX=2
+<% if fetch(:puma_enable_jit) -%>
+Environment=RUBY_YJIT_ENABLE=1
+<% end -%>
 
 
 Restart=always

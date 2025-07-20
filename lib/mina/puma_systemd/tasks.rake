@@ -23,6 +23,7 @@ namespace :puma do
   set :puma_restart_command, "bundle exec puma"
   set :puma_preload_app, false
   set :puma_init_active_record, true
+  set :puma_enable_jit, true
 
   desc 'Enable puma'
   task enable: :remote_environment do
